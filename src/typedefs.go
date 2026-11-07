@@ -10,8 +10,9 @@ type Controller struct {
 }
 
 type Dualshock3Buttons struct { 
-	// Some buttons are uint8 and not bool because the buttons on the Dualshock 3 
-	// controller were pressure sensitive and thus require numbers.
+	// Some buttons are uint8 and not bool because the buttons    
+	// on the Dualshock 3 controller were pressure sensitive 
+	// and thus require numbers.
 
 	Circle   uint8
 	Cross    uint8
@@ -46,6 +47,7 @@ type Dualshock3Controller struct {
 }
 
 const (
-	// Only playstation for now! These ones are the easiest from what I've heard
+	// Only playstation for now! Nintendo and Xbox controllers    
+	// are planned though!
 	Dualshock3 ControllerModel = iota
 )
