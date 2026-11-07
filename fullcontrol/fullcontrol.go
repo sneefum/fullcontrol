@@ -42,7 +42,7 @@ func CreateController(model ControllerModel) (any, error) {
 	}
 	switch model {
 	case Dualshock3:
-		return Dualshock3Controller{
+		return &Dualshock3Controller{
 			Controller{
 				Dualshock3,
 				controllerMac,
@@ -55,5 +55,24 @@ func CreateController(model ControllerModel) (any, error) {
 		}, nil
 	default:
 		return nil, errors.New("Unknown controller type")
+	}
+}
+
+func buttonToAnsi(button any) string {
+	var buttonPressed bool
+	// uint8() and bool() are neccessary here or this function
+	// fails to compile
+	switch v := button.(type) {
+    case uint8:
+        buttonPressed = v > 0
+    case bool:
+        buttonPressed = v
+    default:
+        panic("Argument button must be either type uint8 or bool!")
+    }
+	if buttonPressed {
+		return "\x1b[1;32m"
+	} else {
+		return "\x1b[2;31m"
 	}
 }
