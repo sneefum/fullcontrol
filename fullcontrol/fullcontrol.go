@@ -1,6 +1,7 @@
 package fullcontrol
 
 import (
+	"cmp"
 	"fmt"
 	"errors"
 	"regexp"
@@ -12,6 +13,16 @@ func init() {
 	os := runtime.GOOS
 	if os != "linux" {
 		panic("This module takes advantage of the linux bluetooth stack to emulate a bluetooth peripheral. Please use a linux machine to run this module!")
+	}
+}
+
+func Clamp[T cmp.Ordered](val, minVal, maxVal T) T {
+	if val > maxVal {
+		return maxVal
+	} else if val < minVal {
+		return minVal
+	} else {
+		return val
 	}
 }
 
@@ -59,20 +70,24 @@ func CreateController(model ControllerModel) (any, error) {
 }
 
 func buttonToAnsi(button any) string {
-	var buttonPressed bool
 	// uint8() and bool() are neccessary here or this function
 	// fails to compile
 	switch v := button.(type) {
     case uint8:
-        buttonPressed = v > 0
+        if v == 0 {
+			return "\x1b[0;31m"
+		} else if v == 255 {
+			return "\x1b[1;32m"
+		} else {
+			return "\x1b[1;34m"
+		}
     case bool:
-        buttonPressed = v
+        if v {
+			return "\x1b[1;32m"
+		} else {
+			return "\x1b[0;31m"
+		}
     default:
         panic("Argument button must be either type uint8 or bool!")
-    }
-	if buttonPressed {
-		return "\x1b[1;32m"
-	} else {
-		return "\x1b[2;31m"
-	}
+    }	
 }

@@ -82,12 +82,20 @@ func (c *Dualshock3Controller) TiltStick(x float64, y float64, stick ControllerS
 	}
 }
 
-func (c *Dualshock3Controller) PressButton(button any) {
+func (c *Dualshock3Controller) PressButton(button any, distance ...float64) {
 	switch b := button.(type) {
     case *uint8:
-        *b = 255
+		if len(distance) > 0 {
+			*b = uint8(Clamp(distance[0], 0, 1) * 255)
+		} else {
+			*b = 255
+		} 
     case *bool:
-        *b = true
+        if len(distance) > 0 {
+			*b = distance[0] > 127
+		} else {
+			*b = false
+		} 
     default:
         panic("Button must be *uint8 or *bool")
     }
