@@ -9,11 +9,30 @@ import (
 	"math/rand/v2"
 )
 
+var initialAlias string
+
 func init() {
 	os := runtime.GOOS
 	if os != "linux" {
 		panic("This module takes advantage of the linux bluetooth stack to emulate a bluetooth peripheral. Please use a linux machine to run this module!")
 	}
+
+	InitBluetooth()
+
+	var err error
+	initialAlias, err = GetAdapterAlias()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Close() {
+	err := SetAdapterAlias(initialAlias)
+	if err != nil {
+		panic(err)
+	}
+
+	CloseDBus()
 }
 
 func Clamp[T cmp.Ordered](val, minVal, maxVal T) T {

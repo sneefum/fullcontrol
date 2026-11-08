@@ -111,3 +111,10 @@ func (c *Dualshock3Controller) ReleaseButton(button any) {
         panic("Button must be *uint8 or *bool")
     }
 }
+
+func (c *Dualshock3Controller) Connect() error {
+	// Fake loading sequence, will replace with something that actually connects later
+	SetAdapterAlias("PLAYSTATION(R)3 Controller")
+	c.Info.Connected = true
+	return nil
+}
